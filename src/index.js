@@ -9,6 +9,7 @@ const API_HEADERS = {
   'Content-Type': 'application/json',
 }
 
+
 function _getJSONOrLogError(response) {
   if (response.ok) return response.json();
   console.log('Error ' + response.statusText);
