@@ -1,6 +1,12 @@
 // Utils methods to use across our app
 
+
 export function _getJSONOrLogError(response) {
-  if (response.ok) return response.json();
-  console.log('Error ' + response.statusText);
-}
+  if (!response) return null;
+  if (!response.ok) {
+    throw Error('Server error: ' + response.text());
+  }
+  return response.text().then(function(text) {
+    return text ? JSON.parse(text) : {};
+  });
+};

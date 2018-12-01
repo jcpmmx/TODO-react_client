@@ -4,13 +4,6 @@ import { API_ENDPOINT_URL, API_HEADERS } from './config';
 import { _getJSONOrLogError } from './utils';
 
 
-// ---------------------------------------------------------------------------------------------------------------------
-// TODO(Julian): We need to take care of the following to polish this app:
-// - Make sure deleting an item takes it form the list
-// - Make sure 'status' is always synced: when adding new items and when toggling/deleting
-// ---------------------------------------------------------------------------------------------------------------------
-
-
 class TODOForm extends React.Component {
 
   constructor(props) {
@@ -39,32 +32,25 @@ class TODOForm extends React.Component {
 
 class TODOItem extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: props.data,
-    };
-  }
-
   render() {
     var deleteIcon = <i className="far fa-trash-alt" title="Delete this" onClick={ this.deleteItem.bind(this) }></i>;
     return (
       <li 
-        className={ this.state.data.completed ? 'completed' : '' }
+        className={ this.props.data.completed ? 'completed' : '' }
         onClick={ this.toggleItem.bind(this) }
-        title={ this.state.data.completed ? 'Mark as undone' : 'Done? Mark it!' }
-      >{ this.state.data.name } { deleteIcon }</li>
+        title={ this.props.data.completed ? 'Mark as undone' : 'Done? Mark it!' }
+      >{ this.props.data.name } { deleteIcon }</li>
     );
 
   }
 
   toggleItem() {
-    this.props.toggleItem(this.state.data.id, this.state.data.completed).then(data => this.setState({data}));
+    this.props.toggleItem(this.props.data.id, this.props.data.completed);
   }
 
   deleteItem(e) {
     e.stopPropagation();
-    this.props.deleteItem(this.state.data.id);
+    this.props.deleteItem(this.props.data.id);
   }
 
 }
@@ -95,7 +81,6 @@ class TODOApp extends React.Component {
     this.state = {
       items: [],
       status: 'No items yet',
-      ts: (new Date()).toString(),  // To force a `status` refresh
     };
   }
 
@@ -143,7 +128,7 @@ class TODOApp extends React.Component {
     })
       .then(response => _getJSONOrLogError(response))
       .then(data => this.setState({items: [data].concat(this.state.items)}))
-      .catch(e => console.log('Server error: ', e.message));
+      .catch(e => console.log(e.message));
   }
 
   async toggleItem(itemId, itemCompleted) {
@@ -153,8 +138,8 @@ class TODOApp extends React.Component {
       body: JSON.stringify({completed: !itemCompleted}),
     })
       .then(response => _getJSONOrLogError(response))
-      .then(data => data)
-      .catch(e => console.log('Server error: ', e.message));
+      .then(data => this.setState({items: this.state.items.map((item) => item.id === data.id ? data : item)}))
+      .catch(e => console.log(e.message));
   }
 
   async deleteItem(itemId) {
@@ -163,8 +148,8 @@ class TODOApp extends React.Component {
       headers: API_HEADERS,
     })
       .then(response => _getJSONOrLogError(response))
-      .then(_ => this.setState({items: this.state.items.filter(item => itemId === item.id)}))
-      .catch(e => console.log('Server error: ', e.message));
+      .then(_ => this.setState({items: this.state.items.filter(item => itemId !== item.id)}))
+      .catch(e => console.log(e.message));
   }
 
   refreshStatus() {
