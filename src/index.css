@@ -1,0 +1,53 @@
+body {
+  margin: 33px;
+  background: #fff;
+  text-align: center;
+}
+
+#todo_app {
+  padding: 13px 33px;
+  background: #fafafa;
+}
+#todo_app h1 {
+  margin: 0;
+  font-size: 3.3em;
+  font-weight: bold;
+}
+
+#todo_form input {
+  width: 100%;
+  padding: 13px;
+}
+
+#todo_list {
+  margin: 33px 0;
+  padding: 13px 0;
+  list-style: none;
+}
+#todo_list li {
+  position: relative;
+  padding: 3px 33px;
+}
+#todo_list li i {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  color: #ccc;
+}
+#todo_list li i:hover {
+  color: #c00;
+}
+#todo_list li:hover {
+  background: #eee;
+  font-weight: bold;
+  cursor: pointer;
+}
+#todo_list li.completed {
+  color: #ccc;
+}
+
+#todo_status {
+  padding: 0;
+  margin: 0;
+  font-size: 0.7em;
+}
