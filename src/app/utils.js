@@ -1,7 +1,7 @@
 // Utils methods to use across our app
 
 
-export function _getJSONOrLogError(response) {
+export function getJSONOrLogError(response) {
   if (!response) return null;
   if (!response.ok) {
     throw Error('Server error: ' + response.text());

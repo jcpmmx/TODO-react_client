@@ -1,77 +1,9 @@
 import React from 'react';
 
+import TODOForm from './components/TODOForm';
+import TODOList from './components/TODOList';
 import { API_ENDPOINT_URL, API_HEADERS } from './config';
-import { _getJSONOrLogError } from './utils';
-
-
-class TODOForm extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.newItemInput = React.createRef();
-  }
-
-  render() {
-    return (
-      <div id="todo_form">
-        <form onSubmit={ this.addItem.bind(this) } autoComplete="off">
-          <input id="todo_new" type="text" placeholder="Anything pending?" ref={this.newItemInput} />
-        </form>
-      </div>
-    );
-  }
-
-  addItem(e) {
-    e.preventDefault();
-    this.props.addItem(this.newItemInput.current.value);
-    this.newItemInput.current.value = '';
-  }
-
-}
-
-
-class TODOItem extends React.Component {
-
-  render() {
-    var deleteIcon = <i className="far fa-trash-alt" title="Delete this" onClick={ this.deleteItem.bind(this) }></i>;
-    return (
-      <li 
-        className={ this.props.data.completed ? 'completed' : '' }
-        onClick={ this.toggleItem.bind(this) }
-        title={ this.props.data.completed ? 'Mark as undone' : 'Done? Mark it!' }
-      >{ this.props.data.name } { deleteIcon }</li>
-    );
-
-  }
-
-  toggleItem() {
-    this.props.toggleItem(this.props.data.id, this.props.data.completed);
-  }
-
-  deleteItem(e) {
-    e.stopPropagation();
-    this.props.deleteItem(this.props.data.id);
-  }
-
-}
-
-
-class TODOList extends React.Component {
-  render() {
-    var items = this.props.items;
-    return (
-      <ul id="todo_list">
-      { items.map(data => 
-        <TODOItem
-          key={ data.id }
-          data={ data }
-          toggleItem={ this.props.toggleItem }
-          deleteItem={ this.props.deleteItem }
-        />
-      ) }</ul>
-    );
-  }
-}
+import { getJSONOrLogError } from './utils';
 
 
 class TODOApp extends React.Component {
@@ -116,7 +48,7 @@ class TODOApp extends React.Component {
   getItems() {
     this.setState({status: 'Loading...'});
     fetch(API_ENDPOINT_URL, {headers: API_HEADERS})
-      .then(response => _getJSONOrLogError(response))
+      .then(response => getJSONOrLogError(response))
       .then(responseJson => this.setState({items: responseJson, status: 'Done'}));
   }
 
@@ -126,7 +58,7 @@ class TODOApp extends React.Component {
       headers: API_HEADERS,
       body: JSON.stringify({name: name}),
     })
-      .then(response => _getJSONOrLogError(response))
+      .then(response => getJSONOrLogError(response))
       .then(data => this.setState({items: [data].concat(this.state.items)}))
       .catch(e => console.log(e.message));
   }
@@ -137,7 +69,7 @@ class TODOApp extends React.Component {
       headers: API_HEADERS,
       body: JSON.stringify({completed: !itemCompleted}),
     })
-      .then(response => _getJSONOrLogError(response))
+      .then(response => getJSONOrLogError(response))
       .then(data => this.setState({items: this.state.items.map((item) => item.id === data.id ? data : item)}))
       .catch(e => console.log(e.message));
   }
@@ -147,7 +79,7 @@ class TODOApp extends React.Component {
       method: 'DELETE',
       headers: API_HEADERS,
     })
-      .then(response => _getJSONOrLogError(response))
+      .then(response => getJSONOrLogError(response))
       .then(_ => this.setState({items: this.state.items.filter(item => itemId !== item.id)}))
       .catch(e => console.log(e.message));
   }

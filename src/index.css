@@ -47,6 +47,7 @@ body {
 }
 #todo_list li.completed {
   color: #ccc;
+  text-decoration: line-through;
 }
 
 #todo_status {
