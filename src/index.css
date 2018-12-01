@@ -32,9 +32,12 @@ body {
   position: absolute;
   right: 7px;
   top: 7px;
+  color: #ddd;
+}
+#todo_list li:hover i {
   color: #ccc;
 }
-#todo_list li i:hover {
+#todo_list li:hover i:hover {
   color: #c00;
 }
 #todo_list li:hover {
