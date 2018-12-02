@@ -1,5 +1,7 @@
 {
-  "name": "todo-jcpmmx-reactcli",
+  "name": "todo-jcpmmx-reactcli_electronapp",
+  "description": "TODO React client and Electron app",
+  "author": "Julián Pérez (http://www.julianperez.me)",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,17 +9,15 @@
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1"
   },
-  "engines": {
-    "npm": "6.4.1",
-    "node": "11.3.0"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "npx electron src/electron.js",
-    "start-app": "concurrently 'BROWSER=none npm run start' 'wait-on http://localhost:3000/ && npm run electron'"
+    "electron-start": 
+      "concurrently 'BROWSER=none npm run start' 'wait-on http://localhost:3000/ && DEV=1 npx electron .'",
+    "electron-build": "electron-builder --m -c.extraMetadata.main=build/electron.js",
+    "preelectron-build": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -31,6 +31,19 @@
   "devDependencies": {
     "concurrently": "^4.1.0",
     "electron": "^3.0.10",
+    "electron-builder": "^20.38.2",
     "wait-on": "^3.2.0"
+  },
+  "engines": {
+    "npm": "6.4.1",
+    "node": "11.3.0"
+  },
+  "main": "public/electron.js",
+  "homepage": "./",
+  "build": {
+    "appId": "jcpmmx.misc.todo-reactcli_electronapp",
+    "mac": {
+      "category": "public.app-category.utilities"
+    }
   }
 }
