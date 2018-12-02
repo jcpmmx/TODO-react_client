@@ -16,8 +16,8 @@
     "eject": "react-scripts eject",
     "electron-start": 
       "concurrently 'BROWSER=none npm run start' 'wait-on http://localhost:3000/ && DEV=1 npx electron .'",
-    "electron-build": "electron-builder --m -c.extraMetadata.main=build/electron.js",
-    "preelectron-build": "npm run build"
+    "electron-dist": "electron-builder -c.extraMetadata.main=build/electron.js",
+    "preelectron-dist": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
