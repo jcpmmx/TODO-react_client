@@ -1,44 +1,74 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# TODO - React client and Electron app
+> Originally developed as a take-home test project for Orca.
 
-## Available Scripts
+### System requirements
+- Node (v11.3.0)
+- npm (v6.4.1)
 
-In the project directory, you can run:
+Tested mainly in Google Chrome (v70) running on MacOS Sierra (v10.12).
 
-### `npm start`
+### Built and tested with
+- Node (v11.3.0)
+- npm (v6.4.1)
+- React + React DOM (v16.6.3) (using Create React App)
+- React scripts (v2.1.1)
+- Bootstrap (v4.1.3)
+- Font Awesome (v5.5.0)
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Dev-only tools:
+- Electron (v3.0.10)
+- electron-builder (v20.38.2)
+- concurrently (v4.1.0)
+- wait-on (v3.2.0)
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### How to run this locally
+1. Clone this repo
+2. Run: `npm start`
+3. Go to `http://localhost:3000` and play with it
+4. Run `npm test` to run test cases
 
-### `npm test`
+Note that the client will point to the **production** back-end.
+If you want to run also the back-end locally, you need to do 2 steps:  
+- Check https://www.github.com/jcpmmx/TODO-flask_backend on how to run the Flask server locally
+- Change `API_ENDPOINT_URL` (in `src/app/config.js`) to `http://localhost:5000`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### How to run the Electron app locally
+1. Clone this repo
+2. Run: `node electron-start` (this run a local server for React and launch Electron at the same time) 
+3. App will be opened in foreground while webpack runs on terminal
 
-### `npm run build`
+### Optional: create a new version of the Electron app
+Run: `node electron-dist` (this will create a new MacOS .dmg in the `dist/` folder) 
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### About this solution
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+UI comes with the following sections:
+- A text `input` for creating new items
+- The list of all current items
+- A status text at the bottom
 
-### `npm run eject`
+Each of the items can be toggled by clicking on them, or deleted altogether by clicking the trash bin icon.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Internally, the React app is composed of 4 components:  
+- `TODOForm`: coordinates the creation of a new item using the text `input`
+- `TODOItem`: coordinates the internal data and the available operations of an item
+- `TODOList`: coordinates the list of items
+- `TODOApp`: the master component that coordinates the main state (list of items and status text) and all API interactions
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Once loaded, `TODOApp` hits the API to load the initial list of TODO items and passes them over to `TODOList`.
+For each item, `TODOList` relies on `TODOItem` to hook up the internals of a single item.
+`TODOForm` communicates directly with `TODOApp` to manage new items.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Since all API interactions are managed by `TODOApp`, child components must handle first the UI interaction and events (e.g. changing an item class once toggle) and then rely on `TODOApp` to manage the API requets/response that will finally modify the main state and re-render the entire UI.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+> Global configurations are available at `src/app/config.js` and utility methods at `src/app/utils.js`.
 
-## Learn More
+### Limitations
+- If you open more than once instance of the client/app and do a change it won't reflect into other instances
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Nice to haves
+- Adding suppport for multiple TODO lists (assuming back-end already does)
+- Adding real-time support to overcome *Limitations*
+- Making sure it works OK on multiple browsers and devices/platforms
